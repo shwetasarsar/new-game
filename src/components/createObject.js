@@ -1,13 +1,13 @@
 export const createInitialBall = ()=>({
-    x: 350,
+    x: 400,
     y: 450,
     radius: 20,
-    speedX: 6,
-    speedY: -6
+    speedX: 10,
+    speedY: -10
 });
 
 export const createInitialPaddle =()=>({
-    x: 300,
+    x: 250,
     y: 500,
     width: 300,
     height: 20,

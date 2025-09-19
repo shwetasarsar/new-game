@@ -12,24 +12,35 @@ const Button =({btnName, btnHandler, className})=>{
 
 const ButtonActions = ({reStart}) => {
 
-    const {lives, setScore, setLives, setIsPaused} = useContext(UserContext)
+    const {lives, isPaused, setScore, setLives, setIsPaused} = useContext(UserContext)
 
     const pauseGame =()=>{
-        setIsPaused(true);
+        setIsPaused(prev => !prev);
     }
     const startGame =()=>{
         setIsPaused(false);
+        setScore(0);
+        setLives(prev => {
+            let current = prev - 1;
+            if(current <= 0){
+                return 0;
+            }
+            else{
+                return current;
+            }
+        })
+        reStart();
     }
     const resetGame =()=>{
-        reStart();
         setIsPaused(false);
         setScore(0);
         setLives(3);
+        reStart();
     }
 
     return (
         <div className='flex justify-around m-4'>
-            <Button btnName="Pause" btnHandler={pauseGame}/>
+            <Button btnName={isPaused ? "Resume": "Pause"} btnHandler={pauseGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
             <Button btnName="Start" btnHandler={startGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
             <Button btnName="Restart" btnHandler={resetGame}/>
         </div>

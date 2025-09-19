@@ -8,11 +8,13 @@ import UserContext from '../utils/UserContext';
 
 const BricksBreakerGame = () => {
     const [isGameOver, setIsGameOver] = useState(false);
-    const {isPaused} = useContext(UserContext);
+    const [isGameWon, setIsGameWon] = useState(false);
+    const {score, lives, isPaused, setScore} = useContext(UserContext);
 
     const canvasRef = useRef(null);
     let animationRef = useRef(null);
     const isPausedRef = useRef(isPaused);
+    const isGameoverRef = useRef(isGameOver);
 
     const ballRef = useRef(createInitialBall());
     const paddleRef = useRef(createInitialPaddle());
@@ -66,6 +68,7 @@ const BricksBreakerGame = () => {
 
         //ball bounce back
         if((ball.x + ball.radius) > canvas.width || (ball.x - ball.radius) < 0) ball.speedX = -ball.speedX;
+        if(ball.y - ball.radius < 0 ) ball.speedY = -ball.speedY
     }
 
     const collision =()=>{
@@ -81,8 +84,15 @@ const BricksBreakerGame = () => {
             ){
                 brick.isDestroyed = true;
                 ball.speedY = -ball.speedY;
+                setScore(prev => prev + 10);
             }
         })
+
+        const allBricksDestroyed = bricks.every(brick => brick.isDestroyed);
+        if (allBricksDestroyed) {
+            setIsGameWon(true);
+            cancelAnimationFrame(animationRef.current); // Stop game loop
+        }
     }
 
     const startGame =()=>{
@@ -105,7 +115,7 @@ const BricksBreakerGame = () => {
             else{
                 draw(ctx);
             }
-            if(!isGameOver){
+            if(!isGameoverRef.current){
                 animationRef.current = requestAnimationFrame(gameLoop);
             }
         }
@@ -114,7 +124,11 @@ const BricksBreakerGame = () => {
     }
 
     useEffect(()=>{
-        startGame();
+        const canvas = canvasRef.current;
+        canvas.width = 800;
+        canvas.height = 600;
+        const ctx = canvas.getContext('2d');
+        draw(ctx);
 
         return ()=> {
             cancelAnimationFrame(animationRef.current)
@@ -125,6 +139,7 @@ const BricksBreakerGame = () => {
     }, []);
 
     useEffect(()=>{
+        isGameoverRef.current = isGameOver;
         if(isGameOver){
             cancelAnimationFrame(animationRef.current)
         }
@@ -151,8 +166,10 @@ const BricksBreakerGame = () => {
 
 
     return (
-        <div className='w-6/12 mx-auto box-border'>
+        <div data-testid="bricks-game" className='w-6/12 mx-auto box-border'>
             <ScoreBoard />
+            {isGameWon && <h1>You win the game with Score: {score} </h1>}
+            {(lives <= 0 && isGameOver) && <h1 className='text-red-500 text-center font-bold text-lg mt-4'>You have lost the game with a score of: {score} </h1>}
             <canvas data-testid="canvas" ref={canvasRef} className='bg-black mt-4 w-[100%] block'/>
             <ButtonActions reStart={resetGame} />
         </div>
