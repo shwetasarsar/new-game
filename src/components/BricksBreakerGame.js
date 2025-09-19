@@ -1,17 +1,23 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { drawBall, drawBricks, drawPaddle } from './drawObject';
 import { createInitialBall, createInitialBricks, createInitialPaddle } from './createObject';
+import ScoreBoard from './ScoreBoard';
+import ButtonActions from './ButtonActions';
+import UserContext from '../utils/UserContext';
 
 
 const BricksBreakerGame = () => {
     const [isGameOver, setIsGameOver] = useState(false);
+    const {isPaused} = useContext(UserContext);
 
     const canvasRef = useRef(null);
     let animationRef = useRef(null);
+    const isPausedRef = useRef(isPaused);
+
     const ballRef = useRef(createInitialBall());
     const paddleRef = useRef(createInitialPaddle());
     const bricksRef = useRef(createInitialBricks());
-   
+
 
     const draw =(ctx)=>{
         drawBall(ctx, ballRef.current);
@@ -79,7 +85,7 @@ const BricksBreakerGame = () => {
         })
     }
 
-    useEffect(()=>{
+    const startGame =()=>{
         const canvas = canvasRef.current;
         canvas.width = 800;
         canvas.height = 600;
@@ -90,15 +96,25 @@ const BricksBreakerGame = () => {
 
         const gameLoop =()=>{
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            draw(ctx);
-            update();
-            collision();
+            
+            if(!isPausedRef.current){
+                draw(ctx);
+                update();
+                collision();
+            }
+            else{
+                draw(ctx);
+            }
             if(!isGameOver){
                 animationRef.current = requestAnimationFrame(gameLoop);
             }
         }
 
         animationRef.current = requestAnimationFrame(gameLoop);
+    }
+
+    useEffect(()=>{
+        startGame();
 
         return ()=> {
             cancelAnimationFrame(animationRef.current)
@@ -114,9 +130,31 @@ const BricksBreakerGame = () => {
         }
     }, [isGameOver])
 
+    useEffect(()=>{
+        isPausedRef.current = isPaused;
+    }, [isPaused])
+
+    const resetGame=()=>{
+        cancelAnimationFrame(animationRef.current)
+        ballRef.current = createInitialBall()
+        paddleRef.current = createInitialPaddle()
+        bricksRef.current = createInitialBricks()
+
+        // Reset states
+        setIsGameOver(false);
+        isPausedRef.current = false;
+
+        // Start loop again
+        startGame();
+
+    }
+
+
     return (
-        <div className='flex justify-center'>
-            <canvas data-testid="canvas" ref={canvasRef} className='bg-black mt-4'/>
+        <div className='w-6/12 mx-auto box-border'>
+            <ScoreBoard />
+            <canvas data-testid="canvas" ref={canvasRef} className='bg-black mt-4 w-[100%] block'/>
+            <ButtonActions reStart={resetGame} />
         </div>
     )
 }
