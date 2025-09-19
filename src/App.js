@@ -1,8 +1,9 @@
-
+import BricksBreakerGame
+ from "./components/BricksBreakerGame";
 function App() {
   return (
-    <div className="p-4 bg-black text-white text-center" data-testid="app">
-      Bricks Breaker Game
+    <div data-testid="app">
+      <BricksBreakerGame />
     </div>
   );
 }
