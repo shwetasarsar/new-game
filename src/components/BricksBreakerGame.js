@@ -168,7 +168,7 @@ const BricksBreakerGame = () => {
     return (
         <div data-testid="bricks-game" className='w-6/12 mx-auto box-border'>
             <ScoreBoard />
-            {isGameWon && <h1>You win the game with Score: {score} </h1>}
+            {isGameWon && <h1 className='text-blue-500 text-center font-bold text-lg mt-4'>You win the game with Score: {score} </h1>}
             {(lives <= 0 && isGameOver) && <h1 className='text-red-500 text-center font-bold text-lg mt-4'>You have lost the game with a score of: {score} </h1>}
             <canvas data-testid="canvas" ref={canvasRef} className='bg-black mt-4 w-[100%] block'/>
             <ButtonActions reStart={resetGame} />
