@@ -13,10 +13,11 @@ export const drawPaddle =(ctx, paddle)=>{
 
 }
 
-export const drawBricks = (ctx, bricks)=>{
+
+export const drawBricks = (ctx, bricks)=>{   
     bricks.forEach(brick => {
         if(!brick.isDestroyed){
-            ctx.fillStyle="blue"
+            ctx.fillStyle=brick.color
             ctx.fillRect(brick.x, brick.y, brick.width, brick.height)
         }
     });

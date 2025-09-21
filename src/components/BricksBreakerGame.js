@@ -84,7 +84,7 @@ const BricksBreakerGame = () => {
             ){
                 brick.isDestroyed = true;
                 ball.speedY = -ball.speedY;
-                setScore(prev => prev + 10);
+                setScore(prev => prev + brick.score);
             }
         })
 
