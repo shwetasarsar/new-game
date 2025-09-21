@@ -164,7 +164,6 @@ const BricksBreakerGame = () => {
 
     }
 
-
     return (
         <div data-testid="bricks-game" className='w-6/12 mx-auto box-border'>
             <ScoreBoard />
@@ -176,4 +175,4 @@ const BricksBreakerGame = () => {
     )
 }
 
-export default BricksBreakerGame
+export default BricksBreakerGame;

@@ -40,9 +40,9 @@ const ButtonActions = ({reStart}) => {
 
     return (
         <div className='flex justify-around m-4'>
-            <Button btnName={isPaused ? "Resume": "Pause"} btnHandler={pauseGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
-            <Button btnName="Start" btnHandler={startGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
-            <Button btnName="Restart" btnHandler={resetGame}/>
+            <Button data-testid="pause-btn" btnName={isPaused ? "Resume": "Pause"} btnHandler={pauseGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
+            <Button data-testid="start-btn" btnName="Start" btnHandler={startGame} className={(lives <= 0) ? 'cursor-default pointer-events-none' : 'cursor-pointer pointer-events-auto'}/>
+            <Button data-testid="restart-btn" btnName="Restart" btnHandler={resetGame}/>
         </div>
     )
 }
