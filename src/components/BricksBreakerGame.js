@@ -36,6 +36,19 @@ const BricksBreakerGame = () => {
         if(e.key === "ArrowLeft" || e.key === "ArrowRight") paddleRef.current.speed = 0;
     }
 
+    const mouseMoveHandler =(e)=>{
+        const paddle = paddleRef.current;
+        const canvas = canvasRef.current;
+
+        const mouseX = e.clientX;
+        const rect = canvas.getBoundingClientRect();
+
+        paddle.x = mouseX - rect.left - paddle.width / 2;
+
+        if(paddle.x < 0) paddle.x = 0
+        if(paddle.x + paddle.width > canvas.width) paddle.x = canvas.width - paddle.width;
+    }
+
     const update =()=>{
         const ball = ballRef.current;
         const paddle = paddleRef.current;
@@ -100,9 +113,6 @@ const BricksBreakerGame = () => {
         canvas.width = 800;
         canvas.height = 600;
         const ctx = canvas.getContext('2d');
-        
-        document.addEventListener('keydown', keyDownHandler);
-        document.addEventListener('keyup', keyUpHandler);
 
         const gameLoop =()=>{
             ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -130,10 +140,15 @@ const BricksBreakerGame = () => {
         const ctx = canvas.getContext('2d');
         draw(ctx);
 
+        document.addEventListener('keydown', keyDownHandler);
+        document.addEventListener('keyup', keyUpHandler);
+        document.addEventListener('mousemove', mouseMoveHandler);
+
         return ()=> {
             cancelAnimationFrame(animationRef.current)
             document.removeEventListener('keydown', keyDownHandler);
             document.removeEventListener('keyup', keyUpHandler);
+            document.removeEventListener('mousemove', mouseMoveHandler);
         }
         
     }, []);
